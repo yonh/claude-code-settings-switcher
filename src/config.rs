@@ -50,6 +50,11 @@ impl Paths {
     pub fn profile_global_settings(&self, name: &str) -> PathBuf {
         self.profile_dir(name).join("settings.json")
     }
+
+    /// ~/.claude/profiles/config.json (ccss 自身配置)
+    pub fn ccss_config_file(&self) -> PathBuf {
+        self.profiles_dir().join("config.json")
+    }
 }
 
 fn dirs_home() -> PathBuf {

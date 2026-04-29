@@ -1,4 +1,5 @@
 mod config;
+mod editor;
 mod profile;
 
 use colored::Colorize;
@@ -59,6 +60,22 @@ enum Commands {
         /// Profile name to compare against
         name: String,
     },
+    /// View or set ccss configuration
+    Config {
+        #[command(subcommand)]
+        action: ConfigActions,
+    },
+}
+
+#[derive(clap::Subcommand)]
+enum ConfigActions {
+    /// Show current configuration
+    Show,
+    /// Set the preferred editor
+    Editor {
+        /// Editor command (e.g., "code", "vim", "nano"). Omit to show current setting.
+        command: Option<String>,
+    },
 }
 
 fn main() {
@@ -74,6 +91,12 @@ fn main() {
         Commands::Show { name } => profile::show(&paths, &name),
         Commands::Edit { name } => profile::edit(&paths, &name),
         Commands::Diff { name } => profile::diff(&paths, &name),
+        Commands::Config { action } => match action {
+            ConfigActions::Show => editor::config_show(&paths),
+            ConfigActions::Editor { command } => {
+                editor::config_editor(&paths, command.as_deref())
+            }
+        },
     };
 
     if let Err(e) = result {

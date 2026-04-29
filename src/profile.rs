@@ -201,8 +201,12 @@ pub fn edit(paths: &Paths, name: &str) -> Result<(), String> {
     let content_before = fs::read_to_string(&path)
         .map_err(|e| format!("Failed to read settings: {e}"))?;
 
-    edit::edit_file(&path)
-        .map_err(|e| format!("Failed to open editor: {e}"))?;
+    let config = crate::editor::load_config(paths);
+    let resolved = crate::editor::detect_editor(&config);
+    if let Some(e) = &resolved {
+        println!("Opening with editor: {}", e.green());
+    }
+    crate::editor::launch_editor(&path, &config)?;
 
     // 编辑后校验 JSON
     let content_after = fs::read_to_string(&path)

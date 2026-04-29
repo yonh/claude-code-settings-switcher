@@ -17,6 +17,8 @@ cargo install --path .
 
 ## 命令
 
+### Profile 管理
+
 ```bash
 # 列出所有 profile（* 标记当前激活）
 ccss list
@@ -50,6 +52,27 @@ ccss remove <name>
 ccss remove <name> --yes   # 跳过确认
 ```
 
+### 配置管理
+
+```bash
+# 查看当前 ccss 配置（含编辑器检测结果）
+ccss config show
+
+# 设置首选编辑器
+ccss config editor vim
+ccss config editor "code --wait"
+ccss config editor nano
+
+# 查看当前编辑器设置（不传参数）
+ccss config editor
+```
+
+编辑器检测优先级：
+1. `ccss config editor` 设置的编辑器
+2. `EDITOR` 环境变量
+3. `VISUAL` 环境变量
+4. 自动检测系统中的 `vim`、`nano`、`code`
+
 ## 文件布局
 
 ```
@@ -57,6 +80,7 @@ ccss remove <name> --yes   # 跳过确认
 ├── settings.json              # 全局配置
 ├── profiles/
 │   ├── .active                # 记录当前激活的 profile 名称
+│   ├── config.json            # ccss 自身配置（编辑器偏好等）
 │   ├── coding/                # profile "coding"
 │   │   └── settings.json
 │   └── minimal/               # profile "minimal"
@@ -76,12 +100,15 @@ ccss add coding
 ccss add minimal --empty
 ccss edit minimal             # 编辑写入精简配置
 
-# 3. 在项目中使用 coding profile
+# 3. 配置首选编辑器
+ccss config editor vim
+
+# 4. 在项目中使用 coding profile
 ccss use coding
 
-# 4. 临时切换到 minimal
+# 5. 临时切换到 minimal
 ccss use minimal
 
-# 5. 切回 coding（当前 minimal 的配置自动保存回 minimal profile）
+# 6. 切回 coding（当前 minimal 的配置自动保存回 minimal profile）
 ccss use coding
 ```
