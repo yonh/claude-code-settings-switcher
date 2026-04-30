@@ -80,9 +80,11 @@ pub fn use_profile(paths: &Paths, name: &str, global: bool) -> Result<(), String
 
     if global {
         // 全局模式：覆盖 ~/.claude/settings.json
-        // 先保存当前配置到旧 profile
+        // 先保存当前配置到旧 profile（但不覆盖正在切换的目标 profile）
         if let Some(old_name) = current_name(paths) {
-            save_current_to_profile(paths, &old_name)?;
+            if old_name != name {
+                save_current_to_profile(paths, &old_name)?;
+            }
         }
         copy_file(&profile_settings, &paths.global_settings())?;
     } else {
